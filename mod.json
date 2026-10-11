@@ -1,0 +1,21 @@
+{
+	"geode": "5.11.1",
+	"gd": {
+		"win": "2.2081",
+		"android": "2.2081",
+		"mac": "2.2081",
+		"ios": "2.2081"
+	},
+	"id": "ambersignal14.song-toasts",
+	"name": "Song Toasts",
+	"version": "v1.0.0",
+	"developer": "ambersignal14",
+	"description": "A simple mod that displays a toast on-screen with the song's name whenever a level starts.",
+	"dependencies": {
+		"geode.node-ids": ">=v1.23.3"
+	},
+	"tags": ["enhancement", "interface", "music", "universal", "utility"],
+	"links": {
+		"source": "https://github.com/ambersignal14/SongToasts"
+	}
+}
