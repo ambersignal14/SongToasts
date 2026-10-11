@@ -15,7 +15,33 @@ bool Toast::init(std::string name, std::string artist) {
     float paddingLeft = 12.f;
     float paddingRight = 12.f;
     float paddingDown = 12.f;
-    float maxTextWidth = width - paddingLeft - paddingRight;
+    float iconTextPadding = 6.f;
+
+    auto nameLabel = CCLabelBMFont::create(name.c_str(), "bigFont.fnt");
+    nameLabel->setAnchorPoint({ 0.f, 0.5f });
+    nameLabel->setScale(0.45f);
+
+    auto musicIcon = CCSprite::createWithSpriteFrameName("GJ_musicIcon_001.png");
+    if (!musicIcon) {
+        musicIcon = CCSprite::create("GJ_musicIcon_001.png");
+    }
+
+    float iconWidth = 0.f;
+    if (musicIcon) {
+        float labelHeight = nameLabel->getContentHeight() * 0.45f;
+        float iconHeight = musicIcon->getContentHeight();
+        if (iconHeight > 0.f) {
+            float iconScale = labelHeight / iconHeight;
+            musicIcon->setScale(iconScale);
+            iconWidth = musicIcon->getContentWidth() * iconScale;
+        }
+        musicIcon->setAnchorPoint({ 0.f, 0.5f });
+        musicIcon->setPosition({ paddingLeft, (height * 0.68f) });
+        bg->addChild(musicIcon);
+    }
+
+    float textOffsetX = paddingLeft + (musicIcon ? (iconWidth + iconTextPadding) : 0.f);
+    float maxTextWidth = width - textOffsetX - paddingRight;
 
     auto fitLabel = [maxTextWidth](CCLabelBMFont* label, float targetScale) {
         label->setScale(targetScale);
@@ -26,10 +52,8 @@ bool Toast::init(std::string name, std::string artist) {
         }
     };
 
-    auto nameLabel = CCLabelBMFont::create(name.c_str(), "bigFont.fnt");
-    nameLabel->setAnchorPoint({ 0.f, 0.5f });
     fitLabel(nameLabel, 0.45f);
-    nameLabel->setPosition({ paddingLeft, (height * 0.68f) });
+    nameLabel->setPosition({ textOffsetX, (height * 0.68f) });
     bg->addChild(nameLabel);
 
     std::string artistText = artist.empty() ? "Unknown Artist" : fmt::format("By {}", artist);
@@ -63,9 +87,9 @@ void Toast::animate() {
     float slideDistance = width + padding;
 
     auto firstDelay = CCDelayTime::create(0.5f);
-    auto moveIn = CCMoveBy::create(0.5f, { slideDistance, 0.f });
+    auto moveIn = CCEaseIn::create(CCMoveBy::create(0.5f, { slideDistance, 0.f }), 2.0f);
     auto secondDelay = CCDelayTime::create(2.0f);
-    auto moveOut = CCMoveBy::create(0.5f, { -slideDistance, 0.f });
+    auto moveOut = CCEaseIn::create(CCMoveBy::create(0.5f, { -slideDistance, 0.f }), 2.0f);
     auto remove = CCRemoveSelf::create();
 
     auto sequence = CCSequence::create(firstDelay, moveIn, secondDelay, moveOut, remove, nullptr);
